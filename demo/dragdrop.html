@@ -22,11 +22,10 @@
     <script type="text/javascript">
         require(['widget/dragdrop'], function (DragDrop) {
             var dragDrop = new DragDrop({
-                direction: '' // h:水平  v:垂直
+                direction: '', // h:水平  v:垂直,
+                $layer: $("#dragdrop"),
+                $range: $("#range")
             });
-            dragDrop.$layer = $("#dragdrop");
-            dragDrop.$range = $("#range");      //元素范围内移动，不设则为当前窗口
-            dragDrop.init();
         })
     </script>
 </body>

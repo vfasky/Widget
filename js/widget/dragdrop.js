@@ -8,6 +8,9 @@ define('widget/dragdrop', ['jquery'], function ($) {
     var DragDrop = function (options) {
 
         this.options = $.extend({}, {
+            $layer: null,
+            $handle: null,
+            $range: null,
             direction: '',// h:水平  v:垂直
             callback: {
                 start: $.noop,
@@ -16,9 +19,9 @@ define('widget/dragdrop', ['jquery'], function ($) {
             }
         }, options);
 
-        this.$layer = null;
-        this.$handle = null;
-        this.$range = null;
+        this.$layer = options.$layer;
+        this.$handle = options.$handle;
+        this.$range = options.$range;
         this.$window = $(window);
         this.$document = $(document);
 
@@ -28,6 +31,8 @@ define('widget/dragdrop', ['jquery'], function ($) {
         this.offset = { x: 0, y: 0 };
         //原来坐标
         this.originalCoord = { x: 0, y: 0 };
+
+        this.init();
     }
 
     DragDrop.prototype.init = function () {
@@ -57,16 +62,14 @@ define('widget/dragdrop', ['jquery'], function ($) {
 
         //给文档绑定事件
         this.$document.on('mousemove', function (e) {
-            if (self.isMoving) { self.move(e); }
+            if (self.isMoving) {
+                self.move(e);
+            }
         }).on('mouseup', function (e) {
             self.stop(e);
             $(this).off();
         });
 
-        //开始拖动回调函数
-        if ($.isFunction(this.options.callback.start)) {
-            this.options.callback.start(e, this.$layer);
-        }
 
         //获取鼠标位置
         var mouseCoord = this.getMouseCoord(e);
@@ -87,6 +90,11 @@ define('widget/dragdrop', ['jquery'], function ($) {
 
         this.isMoving = true;
 
+        //开始拖动回调函数
+        if ($.isFunction(this.options.callback.start)) {
+            this.options.callback.start(e, this.$layer);
+        }
+
         return false;
 
     };
@@ -104,12 +112,13 @@ define('widget/dragdrop', ['jquery'], function ($) {
 
         if ($range) {
             //元素范围内移动
-            rightBoundary = $range.width() - this.$layer.outerWidth();
-            bottomBoundary = $range.height() - this.$layer.outerHeight();
+            rightBoundary = $range.width() - this.$layer.outerWidth(true);
+            bottomBoundary = $range.height() - this.$layer.outerHeight(true);
+
             if (moveCoord.x < 0) { moveCoord.x = 0; }
             if (moveCoord.y < 0) { moveCoord.y = 0; }
             if (moveCoord.x > rightBoundary) { moveCoord.x = rightBoundary; }
-            if (moveCoord.y > bottomBoundary) { moveCoord.y = bottomBoundary;}
+            if (moveCoord.y > bottomBoundary) { moveCoord.y = bottomBoundary; }
         } else {
             //窗体内移动
             rightBoundary = this.$window.width() - this.$layer.outerWidth() + this.$document.scrollLeft();
@@ -120,17 +129,23 @@ define('widget/dragdrop', ['jquery'], function ($) {
             if (moveCoord.y > bottomBoundary) { moveCoord.y = bottomBoundary; }
         }
         this.setPosition(moveCoord);
+
+        if ($.isFunction(this.options.callback.move)) {
+            this.options.callback.move(moveCoord);
+        }
+
     };
 
     //停止拖动
     DragDrop.prototype.stop = function (e) {
-        if ($.isFunction(this.options.callback.stop)) {
-            this.options.callback.stop(e, this.$layer);
-        }
         this.isMoving = false;
 
         if (this.$handle[0].releaseCapture) {
             this.$handle[0].releaseCapture();
+        }
+
+        if ($.isFunction(this.options.callback.stop)) {
+            this.options.callback.stop(e, this.$layer);
         }
     };
 
