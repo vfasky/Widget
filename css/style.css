@@ -89,6 +89,7 @@
 .pagination-sm > li:first-child > span { border-bottom-left-radius: 3px; border-top-left-radius: 3px; }
 .pagination-sm > li:last-child > a,
 .pagination-sm > li:last-child > span { border-bottom-right-radius: 3px; border-top-right-radius: 3px; }
+
 /*------------------------------------------
  * switch
  *----------------------------------------*/
