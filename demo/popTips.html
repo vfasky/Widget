@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <title></title>
     <link rel="stylesheet" type="text/css" href="../css/vendor/font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/widget.css" />
     <script type="text/javascript" src="../js/vendor/require/require.js"></script>
     <script type="text/javascript" src="../js/main.js"></script>
     <style type="text/css">
@@ -23,7 +23,7 @@
         require(['widget/popTips'], function (popTips) {
             $("#btnSuccess").click(function () {
                 popTips.success("成功！", function () {
-                    alert("回调函数")
+                    alert("回调函数");
                 });
             });
             $("#btnError").click(function () {
